@@ -32,7 +32,7 @@ sealed class Chromosome {
                 val left = randomize(maxDepth, currentDepth + 1)
                 val right = randomize(maxDepth, currentDepth + 1)
 
-                if (Random.nextDouble() < 0.2) {
+                if (Random.nextDouble() < 0.2 && left !is IfL && right !is IfL) {
                     IfL(left, right, randomize(maxDepth, currentDepth + 1), randomize(maxDepth, currentDepth + 1))
                 }
                 else {

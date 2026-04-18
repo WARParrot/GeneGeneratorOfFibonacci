@@ -26,39 +26,39 @@ object Fitness {
         return error.absoluteValue
     }
 
-    private fun interpret(node: Chromosome, n: Int, gene: Chromosome): Int? {
+    private fun interpret(node: Chromosome, n: Int, gene: Chromosome, recursionCounter: Int = 0): Int? {
+        if (recursionCounter > 1) return null
         return when (node) {
             is Chromosome.Constant -> node.value
             is Chromosome.Variable -> n
             is Chromosome.Sum -> {
-                val left = interpret(node.l, n, gene) ?: return null
-                val right = interpret(node.r, n, gene) ?: return null
+                val left = interpret(node.l, n, gene, recursionCounter) ?: return null
+                val right = interpret(node.r, n, gene, recursionCounter) ?: return null
                 left + right
             }
             is Chromosome.Sub -> {
-                val left = interpret(node.l, n, gene) ?: return null
-                val right = interpret(node.r, n, gene) ?: return null
+                val left = interpret(node.l, n, gene, recursionCounter) ?: return null
+                val right = interpret(node.r, n, gene, recursionCounter) ?: return null
                 left - right
             }
             is Chromosome.Mul -> {
-                val left = interpret(node.l, n, gene) ?: return null
-                val right = interpret(node.r, n, gene) ?: return null
+                val left = interpret(node.l, n, gene, recursionCounter) ?: return null
+                val right = interpret(node.r, n, gene, recursionCounter) ?: return null
                 left * right
             }
             is Chromosome.IfL -> {
-                val left = interpret(node.l, n, gene) ?: return null
-                val right = interpret(node.r, n, gene) ?: return null
+                val left = interpret(node.l, n, gene, recursionCounter) ?: return null
+                val right = interpret(node.r, n, gene, recursionCounter) ?: return null
                 if (left < right) {
-                    interpret(node.branch1, n, gene)
+                    interpret(node.branch1, n, gene, recursionCounter)
                 }
                 else {
-                    interpret(node.branch2, n, gene)
+                    interpret(node.branch2, n, gene, recursionCounter)
                 }
             }
             is Chromosome.Call -> {
                 val newN = interpret(node.arg, n, gene) ?: return null
-                if (newN < 0) return 0
-                interpret(node.arg, newN, gene)
+                interpret(gene, newN, gene, recursionCounter + 1)
             }
         }
     }

@@ -16,10 +16,15 @@ object Evolution {
         return replacedNode(parent1, replaceWhat, replaceTo)
     }
 
-    fun mutate(child: Chromosome, mutationRate: Double): Chromosome {
+    fun mutate(child: Chromosome, mutationRate: Double, secondaryMutationRate: Double): Chromosome {
         return if (Random.nextDouble() < mutationRate) {
             val replaceWhat = getRandomNode(child)
             val replaceTo = Chromosome.randomize(3, 0)
+            replacedNode(child, replaceWhat, replaceTo)
+        }
+        else if (Random.nextDouble() < secondaryMutationRate) {
+            val replaceWhat = getRandomNode(child)
+            val replaceTo = Chromosome.Call(Chromosome.randomize(3, 0))
             replacedNode(child, replaceWhat, replaceTo)
         }
         else {

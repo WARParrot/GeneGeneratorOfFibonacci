@@ -2,8 +2,8 @@ package com.example.genegeneratoroffibonacci.genetic
 
 object KotlinCodeGenerator {
     fun generate(gene: Chromosome): String {
-        val body = Chromosome.Call(gene).toKotlin()
-        return body
+        val body = gene.toKotlin()
+        return "fun fib(n: Int): Int = $body"
     }
 
     private fun Chromosome.toKotlin(): String = when (this) {
@@ -13,6 +13,6 @@ object KotlinCodeGenerator {
         is Chromosome.Sub -> "(${l.toKotlin()} - ${r.toKotlin()})"
         is Chromosome.Mul -> "(${l.toKotlin()} * ${r.toKotlin()})"
         is Chromosome.IfL -> "if (${l.toKotlin()} < ${r.toKotlin()}) ${branch1.toKotlin()} else ${branch2.toKotlin()}"
-        is Chromosome.Call -> "fun fib(n: Int): Int = ${arg.toKotlin()}"
+        is Chromosome.Call -> "fib(${arg.toKotlin()})"
     }
 }

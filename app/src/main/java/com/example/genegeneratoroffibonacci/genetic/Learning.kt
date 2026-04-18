@@ -14,7 +14,8 @@ class Learning (
     val populationSize: Int = 200,
     val maxGenerations: Int = 100,
     val maxTreeDepth: Int = 5,
-    val mutationRate: Double = 0.1,
+    val mutationRate: Double = 0.2,
+    val secondaryMutationRate: Double = 0.1,
     val delayMs: Long = 16
 ) {
     private val _state = MutableSharedFlow<LearningState>(replay = 1)
@@ -63,7 +64,7 @@ class Learning (
                 val parent1 = Evolution.tournamentSelection(fitnessScores, 3)
                 val parent2 = Evolution.tournamentSelection(fitnessScores, 3)
                 var child = Evolution.crossover(parent1, parent2)
-                child = Evolution.mutate(child, mutationRate)
+                child = Evolution.mutate(child, mutationRate, secondaryMutationRate)
                 newPopulation.add(child)
             }
             population = newPopulation
