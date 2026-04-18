@@ -58,7 +58,7 @@ object Fitness {
             is Chromosome.Call -> {
                 val newN = interpret(node.arg, n, gene) ?: return null
                 if (newN < 0) return 0
-                interpret(gene, newN, gene)
+                interpret(node.arg, newN, gene)
             }
         }
     }

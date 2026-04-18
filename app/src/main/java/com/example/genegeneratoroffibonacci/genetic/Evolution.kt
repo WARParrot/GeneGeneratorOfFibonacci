@@ -40,56 +40,50 @@ object Evolution {
         }
     }
 
-    fun getNodeAtIndex(node: Chromosome, index: Int): Pair<Chromosome, Int> {
-        if (index == 0) return node to 0
+    fun getNodeAtIndex(root: Chromosome, index: Int): Chromosome {
+        var currentIndex = 0
+        var result: Chromosome? = null
 
-        var left = index - 1
-        return when (node) {
-            is Chromosome.Constant, Chromosome.Variable -> node to left
-            is Chromosome.Sum -> {
-                val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
-                if (leftLeft == 0) return leftNode to 0
-                left = leftLeft
-                val (rightNode, rightLeft) = getNodeAtIndex(node.r, left - 1)
-                rightNode to rightLeft
+        fun dfs(node: Chromosome) {
+            if (result != null) return
+            if (currentIndex == index) {
+                result = node
+                return
             }
-            is Chromosome.Sub -> {
-                val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
-                if (leftLeft == 0) return leftNode to 0
-                left = leftLeft
-                val (rightNode, rightLeft) = getNodeAtIndex(node.r, left - 1)
-                rightNode to rightLeft
-            }
-            is Chromosome.Mul -> {
-                val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
-                if (leftLeft == 0) return leftNode to 0
-                left = leftLeft
-                val (rightNode, rightLeft) = getNodeAtIndex(node.r, left - 1)
-                rightNode to rightLeft
-            }
-            is Chromosome.IfL -> {
-                val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
-                if (leftLeft == 0) return leftNode to 0
-                left = leftLeft
-                val (rightNode, rightLeft) = getNodeAtIndex(node.r, left - 1)
-                if (rightLeft == 0) return rightNode to 0
-                left = rightLeft
-                val (branch1Node, branch1Left) = getNodeAtIndex(node.branch1, left - 1)
-                if (branch1Left == 0) return branch1Node to 0
-                left = branch1Left
-                val (branch2Node, branch2Left) = getNodeAtIndex(node.branch2, left - 1)
-                branch2Node to branch2Left
-            }
-            is Chromosome.Call -> {
-                getNodeAtIndex(node.arg, left)
+            currentIndex++
+            when (node) {
+                is Chromosome.Constant, Chromosome.Variable -> {}
+                is Chromosome.Sum -> {
+                    dfs(node.l)
+                    dfs(node.r)
+                }
+                is Chromosome.Sub -> {
+                    dfs(node.l)
+                    dfs(node.r)
+                }
+                is Chromosome.Mul -> {
+                    dfs(node.l)
+                    dfs(node.r)
+                }
+                is Chromosome.IfL -> {
+                    dfs(node.l)
+                    dfs(node.r)
+                    dfs(node.branch1)
+                    dfs(node.branch2)
+                }
+                is Chromosome.Call -> {
+                    dfs(node.arg)
+                }
             }
         }
+        dfs(root)
+        return result ?: error("Index out of bounds.")
     }
 
     fun getRandomNode(root: Chromosome): Chromosome {
         val totalNodes = countNodes(root)
         val goal = Random.nextInt(totalNodes)
-        return getNodeAtIndex(root, goal).first
+        return getNodeAtIndex(root, goal)
     }
 
     fun replacedNode(root: Chromosome, replaceWhat: Chromosome, replaceTo: Chromosome): Chromosome {
