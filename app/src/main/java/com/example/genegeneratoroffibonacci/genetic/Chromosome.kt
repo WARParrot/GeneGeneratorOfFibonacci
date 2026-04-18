@@ -8,7 +8,6 @@ sealed class Chromosome {
     data class Sum(val l: Chromosome, val r: Chromosome) : Chromosome()
     data class Sub(val l: Chromosome, val r: Chromosome) : Chromosome()
     data class Mul(val l: Chromosome, val r: Chromosome) : Chromosome()
-    data class Div(val l: Chromosome, val r: Chromosome) : Chromosome()
     data class IfL(val l: Chromosome, val r: Chromosome, val branch1: Chromosome, val branch2: Chromosome) : Chromosome()
     data class Call(val arg: Chromosome) : Chromosome()
 
@@ -21,7 +20,6 @@ sealed class Chromosome {
             { left, right -> Sum(left, right) },
             { left, right -> Sub(left, right) },
             { left, right -> Mul(left, right) },
-            { left, right -> Div(left, right) },
         )
 
         fun randomize(maxDepth: Int, currentDepth: Int): Chromosome {

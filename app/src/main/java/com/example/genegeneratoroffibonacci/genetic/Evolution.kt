@@ -34,7 +34,6 @@ object Evolution {
             is Chromosome.Sum -> 1 + countNodes(node.l) + countNodes(node.r)
             is Chromosome.Sub -> 1 + countNodes(node.l) + countNodes(node.r)
             is Chromosome.Mul -> 1 + countNodes(node.l) + countNodes(node.r)
-            is Chromosome.Div -> 1 + countNodes(node.l) + countNodes(node.r)
             is Chromosome.IfL -> 1 + countNodes(node.l) + countNodes(node.r) +
                     countNodes(node.branch1) + countNodes(node.branch2)
             is Chromosome.Call -> 1 + countNodes(node.arg)
@@ -62,13 +61,6 @@ object Evolution {
                 rightNode to rightLeft
             }
             is Chromosome.Mul -> {
-                val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
-                if (leftLeft == 0) return leftNode to 0
-                left = leftLeft
-                val (rightNode, rightLeft) = getNodeAtIndex(node.r, left - 1)
-                rightNode to rightLeft
-            }
-            is Chromosome.Div -> {
                 val (leftNode, leftLeft) = getNodeAtIndex(node.l, left)
                 if (leftLeft == 0) return leftNode to 0
                 left = leftLeft
@@ -114,10 +106,6 @@ object Evolution {
                 replacedNode(root.r, replaceWhat, replaceTo)
             )
             is Chromosome.Mul -> Chromosome.Mul(
-                replacedNode(root.l, replaceWhat, replaceTo),
-                replacedNode(root.r, replaceWhat, replaceTo)
-            )
-            is Chromosome.Div -> Chromosome.Div(
                 replacedNode(root.l, replaceWhat, replaceTo),
                 replacedNode(root.r, replaceWhat, replaceTo)
             )

@@ -45,12 +45,6 @@ object Fitness {
                 val right = interpret(node.r, n, gene) ?: return null
                 left * right
             }
-            is Chromosome.Div -> {
-                val left = interpret(node.l, n, gene) ?: return null
-                val right = interpret(node.r, n, gene) ?: return null
-                if (right == 0) return left
-                left / right
-            }
             is Chromosome.IfL -> {
                 val left = interpret(node.l, n, gene) ?: return null
                 val right = interpret(node.r, n, gene) ?: return null
