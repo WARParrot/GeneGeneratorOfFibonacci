@@ -15,7 +15,7 @@ class Learning (
     val maxGenerations: Int = 100,
     val maxTreeDepth: Int = 5,
     val mutationRate: Double = 0.1,
-    val delayMs: Long = 116
+    val delayMs: Long = 16
 ) {
     private val _state = MutableSharedFlow<LearningState>(replay = 1)
     val state: SharedFlow<LearningState> = _state.asSharedFlow()

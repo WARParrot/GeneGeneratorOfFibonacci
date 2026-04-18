@@ -1,6 +1,6 @@
 package com.example.genegeneratoroffibonacci.genetic
 
-import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 object Fitness {
     private val testCases = listOf(
@@ -21,9 +21,9 @@ object Fitness {
 
         for ((n, expected) in testCases) {
             val result = interpret(gene, n, gene) ?: return Int.MAX_VALUE
-            error += abs(result - expected)
+            error += (result - expected).absoluteValue
         }
-        return error
+        return error.absoluteValue
     }
 
     private fun interpret(node: Chromosome, n: Int, gene: Chromosome): Int? {
@@ -48,6 +48,7 @@ object Fitness {
             is Chromosome.Div -> {
                 val left = interpret(node.l, n, gene) ?: return null
                 val right = interpret(node.r, n, gene) ?: return null
+                if (right == 0) return left
                 left / right
             }
             is Chromosome.IfL -> {
@@ -62,6 +63,7 @@ object Fitness {
             }
             is Chromosome.Call -> {
                 val newN = interpret(node.arg, n, gene) ?: return null
+                if (newN < 0) return 0
                 interpret(gene, newN, gene)
             }
         }
